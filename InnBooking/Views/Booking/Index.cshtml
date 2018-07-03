@@ -1,0 +1,105 @@
+﻿@model InnBooking.Models.BookingList
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Current Booking List</h2>
+
+<p class="text-right">
+    @Html.ActionLink("Book a Room", "Rooms")
+</p>
+
+@if(TempData["Errors"] != null)
+{
+    <div class="alert alert-danger">
+        <p>Something went wrong!</p>
+        @foreach(var message in (TempData["Errors"] as IEnumerable<string>))
+        {
+            <p>-- @message</p>
+        }
+    </div>
+}
+
+@using(@Html.BeginForm("Change", null, FormMethod.Post, new { id = "bookingForm" }))
+{
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>
+                Room Number
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Customer Name
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Booked Time
+            </th>
+            <th>
+                Checked In Time
+            </th>
+            <th>
+                Checked Out Time
+            </th>
+        </tr>
+
+    @for (int i=0; i<Model.Items.Count; i++) {
+        <tr>
+            <td>
+                @Html.CheckBoxFor(m => m.Items[i].Selected)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Items[i].RoomNumber)
+                @Html.HiddenFor(m => m.Items[i].RoomNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Items[i].Status)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Items[i].Name)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Items[i].Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Items[i].Email)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Items[i].BookedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Items[i].CheckedInTime)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Items[i].CheckedOutTime)
+            </td>
+        </tr>
+    }
+
+    </table>
+    <p>
+        <button type="button" onclick="submitBookingForm('checkin');" class="btn">Check In</button>
+        <button type="button" onclick="submitBookingForm('checkout');" class="btn">Check Out</button>
+        <button type="button" onclick="submitBookingForm('cancel');" class="btn">Cancel Booking</button>
+
+        <input type="hidden" id="bookingAction" name="Action" value="checkin" />
+    </p>
+}
+
+<script type="text/javascript">
+    function submitBookingForm(action) {
+        if(action)
+            $('#bookingAction').val(action);
+        $('#bookingForm').submit();
+    }
+</script>
